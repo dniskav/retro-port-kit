@@ -4,9 +4,13 @@
 - Publish: <yes/no>
 - Fidelity target: <bit-exact sim | visual 1:1 | feel>
 - Runtime data: no original binaries at runtime. Originals only as offline inputs / temporary oracle.
+- Reference runs: emulator + exact config pinned in `docs/REFERENCE.md`; captures in `reference/` (git-ignored), never tracked.
+- Pixel aspect: <square | 320×200 stretched to 4:3 | other>; decided once, applied globally.
 - Formats: SVG (UI), WOFF2/TTF (text), OGG (audio), JSON (data), indexed PNG only for recoloured pixel art.
+- Audio: <OPL re-synthesis | original compositions | both>; no original music/SFX files shipped.
 - External research: knowledge only; never third-party code; log in docs/SOURCES.md.
 - Languages: code=<>, UI=<>, docs=<>
+- Targets: browsers=<>, min viewport=<>, performance budget=<ms/frame, MB assets>
 - Never: <folders not to modify, credentials, actions needing the user's session>
 - Ask the user for: irreversible actions, legal scope, aesthetic taste, large trade-offs. Decide and log everything else.
 - Taste notes: <likes / dislikes / references>

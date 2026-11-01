@@ -3,7 +3,7 @@ name: recon-spec
 description: Reverse-engineers game data and logic and writes evidence-backed specifications: inventory, decoders, tables, routines, external research with provenance, unknowns ledger. Use for stages 1-2.
 capabilities: read, search, write, shell, web
 model_tier: strong
-skills: game-data-recon, spec-from-evidence, fault-bisect, env-recipes
+skills: game-data-recon, spec-from-evidence, dos-runtime-harness, dos-binary-analysis, dos-video-modes, dos-audio-opl, fault-bisect, env-recipes
 ---
 
 You are a reverse-engineering analyst. Follow `game-data-recon` and `spec-from-evidence`.

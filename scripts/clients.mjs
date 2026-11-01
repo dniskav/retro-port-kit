@@ -12,7 +12,7 @@ const env = (k, d) => (process.env[k] ? process.env[k] : d)
 export const CLIENTS = {
   claude_code: {
     label: 'Claude Code', skills: '.claude/skills', agents: 'claude', ctx: [['CLAUDE.md', '@AGENTS.md\n']],
-    userRoot: () => env('CLAUDE_CONFIG_DIR', join(home, '.claude')), userSkills: 'skills',
+    userRoot: () => env('CLAUDE_CONFIG_DIR', join(home, '.claude')), userSkills: 'skills', userAgents: 'agents',
     detect: () => (existsSync(env('CLAUDE_CONFIG_DIR', join(home, '.claude'))) || inPath('claude')) && 'claude config dir or CLI found',
     note: 'Plugin route: /plugin marketplace add <this-folder> (see README). Quit running sessions to see new skills.',
   },
@@ -24,7 +24,7 @@ export const CLIENTS = {
   },
   opencode: {
     label: 'OpenCode', skills: '.opencode/skills', agents: 'opencode', ctx: [],
-    userRoot: () => env('OPENCODE_CONFIG_DIR', join(env('XDG_CONFIG_HOME', join(home, '.config')), 'opencode')), userSkills: 'skills',
+    userRoot: () => env('OPENCODE_CONFIG_DIR', join(env('XDG_CONFIG_HOME', join(home, '.config')), 'opencode')), userSkills: 'skills', userAgents: 'agents',
     detect: () => (existsSync(env('OPENCODE_CONFIG_DIR', join(env('XDG_CONFIG_HOME', join(home, '.config')), 'opencode'))) || inPath('opencode')) && 'opencode config or CLI found',
     note: 'Agent permissions format changed between versions; the older `tools` map is emitted.',
   },

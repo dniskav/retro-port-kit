@@ -4,8 +4,14 @@
   "description": "Portable agents and skills for porting or recreating retro games (staged pipeline, scripted gates, clean-room support).",
   "type": "module",
   "bin": { "retro-port-kit": "bin/retro-port-kit.mjs" },
-  "files": ["bin", "scripts", "src", "tools", "templates", "plugin", ".claude-plugin", "README.md"],
-  "scripts": { "validate": "node scripts/validate.mjs", "build": "node bin/retro-port-kit.mjs build", "test": "node --test tests/" },
-  "engines": { "node": ">=18" },
+  "files": ["bin", "scripts", "src", "tools", "templates", "docs", "plugin", ".claude-plugin", "README.md", "LICENSE"],
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "build": "node bin/retro-port-kit.mjs build",
+    "test": "node --test tests/",
+    "check": "node scripts/validate.mjs && node --test tests/ && node bin/retro-port-kit.mjs build --check",
+    "prepublishOnly": "npm run check"
+  },
+  "engines": { "node": ">=18.17.0" },
   "license": "MIT"
 }

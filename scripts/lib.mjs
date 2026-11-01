@@ -1,8 +1,9 @@
 // Shared helpers: tiny frontmatter parser, kit loader, and per-harness adapters (pure, no dependencies).
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-export const KIT = resolve(import.meta.dirname, '..')
+export const KIT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const MARK_BEGIN = '<!-- retro-port-kit:begin -->'
 const MARK_END = '<!-- retro-port-kit:end -->'
 export { MARK_BEGIN, MARK_END }
@@ -79,18 +80,5 @@ export function playbook(kit) {
   return `# Retro-port playbook (all skills)\n\n` + kit.skills.map((s) => `\n---\n\n<!-- skill: ${s.name} -->\n# ${s.name}\n_${s.meta.description}_\n\n${s.body.replace(/^# .*\n/, '')}`).join('\n')
 }
 
-export const TARGETS = {
-  claude: { skills: '.claude/skills', agents: true, ctx: [['CLAUDE.md', '@AGENTS.md\n']] },
-  codex: { skills: '.agents/skills', agents: false, ctx: [] },
-  opencode: { skills: '.opencode/skills', agents: true, ctx: [] },
-  vscode: { skills: '.github/skills', agents: true, ctx: [] },
-  qwen: { skills: '.qwen/skills', agents: true, ctx: [['QWEN.md', '@AGENTS.md\n']] },
-  gemini: { skills: '.gemini/skills', agents: false, ctx: [['GEMINI.md', '@./AGENTS.md\n']] },
-  cursor: { skills: null, agents: false, ctx: [] },
-  cline: { skills: null, agents: false, ctx: [] },
-  generic: { skills: null, agents: false, ctx: [] },
-}
-/** user-level skill directories (install --scope user), relative to $HOME */
-export const USER_DIRS = { claude: '.claude/skills', codex: '.codex/skills', opencode: '.config/opencode/skills', vscode: '.copilot/skills', qwen: '.qwen/skills', gemini: '.gemini/skills' }
-
+// Install locations live in `clients.mjs` only (single source of truth for paths).
 export function isDir(p) { try { return statSync(p).isDirectory() } catch { return false } }

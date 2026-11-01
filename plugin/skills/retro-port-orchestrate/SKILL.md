@@ -11,6 +11,7 @@ description: Run a retro-game port as a staged pipeline with automatic gates. Us
 | 1 | Recon & research | inventory complete; every file/format has a status; unknowns ledger started |
 | 2 | Spec from evidence | each rule has source + confidence; contradictions listed |
 | 3 | Core engine (deterministic) | reference hashes match on the agreed sample; golden master recorded |
+| 3.5 | **Vertical slice** | one screen works end to end (input → sim → render → audio → save) in a real browser from a clean checkout |
 | 4 | Verification infra | golden + fuzz + bot + e2e run in CI; mutation score measured |
 | 5 | Render/UI | screenshot diff vs reference under threshold, or rubric signed by user |
 | 6 | Campaign/meta/audio | scripted playthrough completes; save/load stable |
@@ -18,6 +19,8 @@ description: Run a retro-game port as a staged pipeline with automatic gates. Us
 | 8 | Polish & docs | blind-rebuild test passes |
 
 Run stage 7 earlier than feels natural: as soon as stage 3 matches the reference, snapshot behaviour (golden master) while the original is still available.
+
+For DOS sources, stage 1 starts with `dos-runtime-harness` (reproducible oracle) and `dos-binary-analysis`; stage 3.5 uses `web-shell`. Do not advance past 3.5 on screenshots alone: the slice must pass e2e with the browser log clean.
 
 ## Delegation
 - One owner per stage. Use specialist agents when context isolation or parallelism pays (recon, QA, assets); otherwise load the skill and do it yourself.

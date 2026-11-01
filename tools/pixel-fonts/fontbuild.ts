@@ -1,4 +1,7 @@
 import { brotliCompressSync, deflateSync } from 'node:zlib'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { coveredCodepoints, pglyph, pglyphSmall, type PGlyph } from './pixelfont.ts'
 
 /**
@@ -130,6 +133,17 @@ export function buildFonts(family = 'Syndi Pixel', small = false): FontFiles {
   const padding = Buffer.alloc((4 - ((hdrLen + stream.length) % 4)) % 4) // el fichero WOFF2 debe medir un múltiplo de 4 bytes
   const total = hdrLen + stream.length + padding.length
   const woff2 = Buffer.concat([Buffer.from('wOF2'), u32(0x00010000), u32(total), u16(t2.length), u16(0), u32(ttf.length), u32(stream.length), u16(1), u16(0), u32(0), u32(0), u32(0), u32(0), u32(0), ...w2dir, stream, padding])
-  ttf = ttf
   return { ttf, woff, woff2 }
+}
+
+// CLI: node --experimental-strip-types tools/pixel-fonts/fontbuild.ts [outDir]
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const out = process.argv[2] ?? 'assets/fonts'
+  const files = buildFonts()
+  mkdirSync(out, { recursive: true })
+  for (const [ext, data] of Object.entries(files)) {
+    const dest = join(out, `pixel.${ext}`)
+    writeFileSync(dest, data)
+    console.log(`${dest} ${data.length} bytes`)
+  }
 }

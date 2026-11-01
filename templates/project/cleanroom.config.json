@@ -1,5 +1,6 @@
 {
-  "originalNames": "(^|/)(game\\d+\\.dat|main\\.exe|[\\w-]+\\.(xmi|fli|voc))$",
+  "originalNames": "(^|/)([\\w-]+\\.(exe|com|dat|voc|xmi|fli|flc|pal|s3m|mod|xm|it|opl|adl|hsc|cmf|mid|wav))$",
+  "referenceDir": "reference/",
   "generatedDirs": ["public/assets-free/"],
   "originalDataDir": "Original/",
   "buildCommand": ["npm", "run", "assets:ci"],
