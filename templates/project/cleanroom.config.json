@@ -1,0 +1,8 @@
+{
+  "originalNames": "(^|/)(game\\d+\\.dat|main\\.exe|[\\w-]+\\.(xmi|fli|voc))$",
+  "generatedDirs": ["public/assets-free/"],
+  "originalDataDir": "Original/",
+  "buildCommand": ["npm", "run", "assets:ci"],
+  "testCommand": ["npx", "vitest", "run"],
+  "workdir": "."
+}

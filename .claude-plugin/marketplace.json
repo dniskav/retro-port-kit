@@ -1,0 +1,13 @@
+{
+  "name": "retro-port-kit",
+  "owner": {
+    "name": "retro-port-kit"
+  },
+  "plugins": [
+    {
+      "name": "retro-port-kit",
+      "source": "./plugin",
+      "description": "Portable agents and skills for porting or recreating retro games (staged pipeline, scripted gates, clean-room support)."
+    }
+  ]
+}

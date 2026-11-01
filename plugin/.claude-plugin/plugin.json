@@ -1,0 +1,13 @@
+{
+  "name": "retro-port-kit",
+  "version": "0.1.0",
+  "description": "Portable agents and skills for porting or recreating retro games (staged pipeline, scripted gates, clean-room support).",
+  "author": {
+    "name": "retro-port-kit"
+  },
+  "keywords": [
+    "retro-games",
+    "port",
+    "clean-room"
+  ]
+}
