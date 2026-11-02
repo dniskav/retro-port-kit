@@ -20,6 +20,20 @@ description: Run a retro-game port as a staged pipeline with automatic gates. Us
 
 Run stage 7 earlier than feels natural: as soon as stage 3 matches the reference, snapshot behaviour (golden master) while the original is still available.
 
+## Fidelity levels (fixed at intake, gate matrix)
+The policy stores the level; the matrix says which gates are optional:
+
+| Level | Gates 0-2 | 3 core | 3.5 slice | 4 verification | 5 render | 6 campaign | 7 clean-room | 8 polish |
+|---|---|---|---|---|---|---|---|---|
+| **A parecido** | mandatory | optional | mandatory | optional | optional | mandatory | mandatory¹ | mandatory |
+| **B se juega igual** | mandatory | mandatory | mandatory | mandatory | rubric² | mandatory | mandatory¹ | mandatory |
+| **C idéntico** | mandatory | mandatory | mandatory | mandatory | mandatory | mandatory | mandatory¹ | mandatory |
+
+¹ Gate 7 applies only when the policy is clean-room or the game will be published; otherwise it is n/a.
+² B verifies screens by signed rubric instead of a measured diff; C requires the measured diff.
+
+Optional gates still run when cheap: doing them is never forbidden, skipping them never has to be argued twice. Record the chosen level and any exceptions in `PROJECT-POLICY.md`; do not advance past gate 2 without it.
+
 For DOS sources, stage 1 starts with `dos-runtime-harness` (reproducible oracle) and `dos-binary-analysis`; stage 3.5 uses `web-shell`. Do not advance past 3.5 on screenshots alone: the slice must pass e2e with the browser log clean.
 
 ## Triage and sampling (stage 1)

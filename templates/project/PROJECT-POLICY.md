@@ -2,7 +2,8 @@
 
 - Scope: <1:1 clone with user-owned data | new game with same mechanics (clean-room)>
 - Publish: <yes/no>
-- Fidelity target: <bit-exact sim | visual 1:1 | feel>
+- Fidelity: <A parecido | B se juega igual | C identico>  (gate matrix: retro-port-orchestrate; A omits 3/4/5, B verifies renders by rubric, C requires all)
+- Fidelity exceptions: <parts allowed to deviate, if any>
 - Runtime data: no original binaries at runtime. Originals only as offline inputs / temporary oracle.
 - Reference runs: emulator + exact config pinned in `docs/REFERENCE.md`; captures in `reference/` (git-ignored), never tracked.
 - Pixel aspect: <square | 320×200 stretched to 4:3 | other>; decided once, applied globally.

@@ -8,7 +8,11 @@ Goal: capture, once, the decisions that were expensive to change late in past pr
 
 ## Ask the user (batch all questions in ONE message, offer a recommended default for each)
 1. **Legal/scope**: 1:1 clone using the user's own copy of the original data, OR a new game with the same mechanics and fully original assets? Will it be published? (If published: clean-room by default.)
-2. **Fidelity target**: bit-exact simulation? visual 1:1? "feels the same"? Which parts may deviate?
+2. **Fidelity level** (decides which stage gates are mandatory — matrix in `retro-port-orchestrate`):
+   - **A (parecido)** — plays like it, looks similar; rendering may differ. Gates 3/4/5 optional.
+   - **B (se juega igual)** — simulation must hold the original's rules; look verified by rubric. Gate 5 optional (rubric), rest mandatory.
+   - **C (idéntico)** — bit-exact simulation and measured visual 1:1. Every gate mandatory.
+   Record exceptions ("which parts may deviate") next to the level in `PROJECT-POLICY.md`.
 3. **Runtime data policy**: no original binaries at runtime (recommended); originals only as inputs of offline tools and as a *temporary* oracle.
 4. **Formats**: prefer modern, light, scalable formats (SVG for UI, WOFF2/TTF for text, OGG for audio, JSON for data, indexed PNG only for palette-recoloured pixel art).
 5. **Platforms/harness**: target runtime (web/desktop), languages (code, UI text, docs), CI available?
