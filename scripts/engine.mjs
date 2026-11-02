@@ -3,14 +3,13 @@
 // removes only what we own and still matches.
 import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, readlinkSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import { dirname, join, basename, relative, resolve, sep } from 'node:path'
-import { CLIENTS, skillsDir } from './clients.mjs'
+import { CLIENTS, HOME, skillsDir } from './clients.mjs'
 import { KIT, MARK_BEGIN, MARK_END, agentFile, agentsBlock, playbook } from './lib.mjs'
 
 const sha = (b) => createHash('sha256').update(b).digest('hex')
 const MANIFEST = '.retro-port-kit.json'
-export const manifestPath = (scope, project) => join(scope === 'user' ? homedir() : project, MANIFEST)
+export const manifestPath = (scope, project) => join(scope === 'user' ? HOME : project, MANIFEST)
 /** read the ownership manifest of a scope (`{ clients, options, entries }`); empty when nothing is installed */
 export const manifestOf = (scope, project) => {
   const p = manifestPath(scope, project)
@@ -36,7 +35,7 @@ function filesOf(dir, base = dir) {
 export function buildPlan({ clients, scope, project, link, skills = true, agents = true, context = true, scaffold = false }, kit) {
   const ops = new Map()
   const add = (op) => ops.has(op.dest) || ops.set(op.dest, op)
-  const root = scope === 'user' ? homedir() : project
+  const root = scope === 'user' ? HOME : project
   for (const id of clients) {
     const c = CLIENTS[id]
     if (!c) throw new Error(`unknown client: ${id}`)

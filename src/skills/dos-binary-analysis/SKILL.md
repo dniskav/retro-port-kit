@@ -17,7 +17,7 @@ description: Analyse DOS executables and memory: MZ/LE/NE headers, overlays and 
 - Segment registers: `DS` data, `ES` extra/string ops, `SS:SP` stack, `CS:IP` code. Functions often return far pointers in `DX:AX`.
 
 ## Tools and workflow
-- Disassemble as 16-bit (`rizin -a x86 -b 16`, objdump, IDA DOS loader, Ghidra MZ/raw loader, or REA).
+- Disassemble as 16-bit (`rizin -a x86 -b 16`, objdump, IDA DOS loader, or a Ghidra MZ/raw loader).
 - Load the image at `PSP + 0x100` and start at `CS:IP`; mark the PSP and IVT hooks.
 - Find file I/O by `INT 21h` calls (`3D/3F/40/42`), not by guessing filenames.
 - Find the main loop by the timer tick (`INT 8h` hook or port `0x40`) and the keyboard poll.

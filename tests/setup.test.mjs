@@ -213,7 +213,7 @@ test('generated plugin is up to date', () => {
   assert.equal(r.status, 0, r.stdout + r.stderr)
 })
 
-test('symlinked destination that is not ours is refused', () => {
+test('symlinked destination that is not ours is refused', { skip: process.platform === 'win32' && 'creating symlinks usually requires elevation on Windows' }, () => {
   const p = proj()
   const r = run(['setup', '--client', 'claude_code', '--project', p, '--link', '--yes'])
   assert.equal(r.status, 0)

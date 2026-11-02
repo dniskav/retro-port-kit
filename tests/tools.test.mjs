@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, '..')
@@ -60,7 +60,7 @@ test('cleanroom gate reports a missing git repository instead of crashing', () =
 })
 
 test('renderPlan groups operations per client and emits no ANSI codes off a TTY', async () => {
-  const { renderPlan } = await import(join(ROOT, 'scripts/ui.mjs'))
+  const { renderPlan } = await import(pathToFileURL(join(ROOT, 'scripts/ui.mjs')).href)
   const ops = [
     { kind: 'file', dest: '/p/.claude/skills/a/SKILL.md', client: 'claude_code', pruneRoot: '/p/.claude/skills', label: 'skill a/SKILL.md' },
     { kind: 'block', dest: '/p/AGENTS.md', client: 'claude_code', label: 'AGENTS.md block' },

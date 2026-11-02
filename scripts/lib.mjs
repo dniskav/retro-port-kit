@@ -8,9 +8,9 @@ const MARK_BEGIN = '<!-- retro-port-kit:begin -->'
 const MARK_END = '<!-- retro-port-kit:end -->'
 export { MARK_BEGIN, MARK_END }
 
-/** parse `---\nkey: value\n---\nbody` (flat keys only) */
+/** parse `---\nkey: value\n---\nbody` (flat keys only); CRLF is normalized so Windows checkouts work */
 export function parseDoc(text) {
-  const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text)
+  const m = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text.replace(/\r\n/g, '\n'))
   if (!m) throw new Error('missing frontmatter')
   const meta = {}
   for (const line of m[1].split('\n')) {
@@ -49,8 +49,21 @@ export function agentFile(target, a) {
   if (target === 'vscode') return { path: `.github/agents/${name}.agent.md`, text: `---\nname: ${name}\ndescription: ${q(description)}\ntools: [${toolsFor('vscode', caps).map(q).join(', ')}]\n---\n${body}` }
   if (target === 'qwen') return { path: `.qwen/agents/${name}.md`, text: `---\nname: ${name}\ndescription: ${description}\ntools:\n${toolsFor('qwen', caps).map((t) => `  - ${t}`).join('\n')}\n---\n${body}` }
   if (target === 'opencode') {
-    const tools = `tools:\n  write: ${caps.includes('write')}\n  edit: ${caps.includes('write')}\n  bash: ${caps.includes('shell')}\n  webfetch: ${caps.includes('web')}`
-    return { path: `.opencode/agents/${name}.md`, text: `---\ndescription: ${q(description)}\nmode: subagent\n${tools}\n---\n${body}` }
+    const tools = `tools:\n  write: ${caps.includes('write')}\n  edit: ${caps.includes('write')}\n  bash: ${caps.includes('shell')}\n  webfetch: ${caps.includes('web')}\n`
+    // opencode_mode: all/primary for agents startable as the primary session agent (default: subagent)
+    const mode = a.meta.opencode_mode || 'subagent'
+    // opencode_deny: comma-separated edit-protection globs, emitted as OpenCode permission deny rules
+    const deny = list(a.meta.opencode_deny)
+    const permissions = deny.length
+      ? `permissions:\n${deny.map((g) => `  - action: edit\n    resource: ${q(g)}\n    effect: deny`).join('\n')}\n`
+      : ''
+    // primary/all agents can both delegate and be delegated; subagents cannot nest further subagents
+    const notes = mode === 'subagent' ? '' : `
+Notes for this harness (OpenCode V2):
+- As the primary session agent you MAY launch subagents with the \`subagent\` tool — that is your main delegation mechanism.
+- If you yourself were launched as a subagent, you cannot nest further subagents; in that case do not attempt it — adopt the specialist role yourself and report limitations back.
+`
+    return { path: `.opencode/agents/${name}.md`, text: `---\ndescription: ${q(description)}\nmode: ${mode}\n${tools}${permissions}---\n${body}${notes}` }
   }
   return null
 }

@@ -132,9 +132,9 @@ export async function promptMultiSelect({ title, hint = '', items, selected = []
 const shortPath = (dest, root) => {
   const rel = relative(root, dest)
   if (!rel) return '.'
-  if (!rel.startsWith('..') && !rel.startsWith(sep)) return rel
-  const home = homedir()
-  return dest.startsWith(home) ? '~' + dest.slice(home.length) : dest
+  if (!rel.startsWith('..') && !rel.startsWith(sep)) return rel.split(sep).join('/')
+  const home = process.env.HOME || homedir()
+  return dest.startsWith(home) ? '~' + dest.slice(home.length).split(sep).join('/') : dest.split(sep).join('/')
 }
 
 const verbOf = (kinds) => (kinds.size === 1 ? [...kinds][0] : 'write')
