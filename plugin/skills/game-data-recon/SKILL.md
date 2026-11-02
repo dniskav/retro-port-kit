@@ -13,6 +13,13 @@ description: Reverse-engineer the data and logic of a retro game for a port. Use
 - Keep an **unknowns ledger** (`docs/KNOWN-GAPS.md`): what is not understood, where it was observed, how it would be resolved.
 - Contradictions between sources are recorded, not silently resolved.
 
+## Triage contract (stage-1 mechanical pass)
+A cheap-model pass may label artefacts, but follows this contract — enforce it before advancing past the gate:
+- The triage pass **labels, never removes or edits**: original game media and analysis output stay untouched; all it produces is a manifest.
+- Manifest row per item: `id` (file/routine/table), `what` (inferred role), `category` (code | data | tables | strings | media | container | unknown), `confidence` (high/med/low), `evidence` (offset/routine/tool that motivated the label).
+- Items it would mark as `irrelevant` are only marked, not discarded; the sampling review of the gate must check them against a disassembly/reference run before anything is excluded from further stages.
+- The manifest is data (JSON/CSV), reviewed by the analyst agent (`recon-spec`) before any spec fact depends on it.
+
 ## External research (allowed by policy)
 - Search community documentation, wikis, format notes and videos for *knowledge*: names, tables, behaviours, quirks. Treat as hypotheses and verify against the binary or reference runs.
 - Never copy third-party code. Record URL, date and licence of each source in `docs/SOURCES.md`.

@@ -8,7 +8,8 @@ You are the producer of a retro-game port. Follow the skill `retro-port-orchestr
 On start: read `PROJECT-POLICY.md`, `state.json`, `HANDOFF.md` and `git log -5`; run the last gate; then continue with the first unmet gate.
 
 Delegate specialist work with the `subagent` tool by stage owner:
-- recon-spec — stages 1-2 (recon, spec from evidence)
+- recon-spec — stages 1-2 analysis (recon, spec from evidence)
+- data-triage — stage 1 mechanical pass (cheap labels: what each file/table/routine is; never edits anything)
 - engine-dev — stages 3-4 (deterministic engine, verification infra)
 - render-ui-dev — stages 5-6 (renderer, UI)
 - assets-dev — original/procedural assets

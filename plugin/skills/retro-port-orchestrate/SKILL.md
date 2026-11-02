@@ -8,7 +8,7 @@ description: Run a retro-game port as a staged pipeline with automatic gates. Us
 | # | Stage | Gate (objective, scripted) |
 |---|---|---|
 | 0 | Intake | `PROJECT-POLICY.md` exists and the user confirmed it |
-| 1 | Recon & research | inventory complete; every file/format has a status; unknowns ledger started |
+| 1 | Recon & research | inventory complete; every file/format has a status; unknowns ledger started; triage manifests labels-and-never-edits contract verified; **sampling review** of items labelled irrelevant recorded in `state.json` (`sampling`) |
 | 2 | Spec from evidence | each rule has source + confidence; contradictions listed |
 | 3 | Core engine (deterministic) | reference hashes match on the agreed sample; golden master recorded |
 | 3.5 | **Vertical slice** | one screen works end to end (input → sim → render → audio → save) in a real browser from a clean checkout |
@@ -21,6 +21,15 @@ description: Run a retro-game port as a staged pipeline with automatic gates. Us
 Run stage 7 earlier than feels natural: as soon as stage 3 matches the reference, snapshot behaviour (golden master) while the original is still available.
 
 For DOS sources, stage 1 starts with `dos-runtime-harness` (reproducible oracle) and `dos-binary-analysis`; stage 3.5 uses `web-shell`. Do not advance past 3.5 on screenshots alone: the slice must pass e2e with the browser log clean.
+
+## Triage and sampling (stage 1)
+Run the mechanical pass on a cheap model (`data-triage` if available; otherwise load `game-data-recon` yourself): it labels artefacts into a manifest and must never rewrite originals or dumps (contract in `game-data-recon`). Before closing gate 1, review a sample of its labels: every item it marked `irrelevant` plus a handful of each category, each verified against the disassembly or a reference run. Append the review record to `state.json`:
+
+```json
+"sampling": [{ "stage": "1", "sampled": 12, "overturned": 1, "verdict": "pass", "notes": "..." }]
+```
+
+An overturned item is dropped only after the analyst confirms, and the sampling is repeated if more than 10% is overturned.
 
 ## Delegation
 - One owner per stage. Use specialist agents when context isolation or parallelism pays (recon, QA, assets); otherwise load the skill and do it yourself.
