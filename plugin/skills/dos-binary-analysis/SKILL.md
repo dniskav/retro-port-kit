@@ -18,6 +18,15 @@ description: Analyse DOS executables and memory: MZ/LE/NE headers, overlays and 
 
 ## Tools and workflow
 - Disassemble as 16-bit (`rizin -a x86 -b 16`, objdump, IDA DOS loader, or a Ghidra MZ/raw loader).
+
+### Optional provider: REA (MCP)
+The kit has no dependency on it; if the machine already has [REA](https://github.com/morluto/rea) installed, it can drive the same work from the agent:
+- Install once with `npx rea-agents setup` (registers the MCP server + its skill in your agent), then `restart the agent`; REA changes fast — keep it current with `rea update`.
+- REA drives your own native engines: Ghidra, IDA, Hopper or Kuna, licensed and installed by you, separate from and unseen by this kit. Prefer the **Ghidra** route for this era: REA imports DOS **MZ** images with a real-mode 16-bit language (`MzLoader`, `x86:LE:16:Real Mode`), and COM only with the explicit `--target-format dos-com` interpretation; **NE/LE/LX are rejected** — unpack first (this file, above) and analyse the unpacked copy.
+- Verify admission before trusting any result: `rea inspect <game.exe> --provider ghidra --json` must report valid MZ facts (page counts, relocation bounds, entry point), and `inspect_native_load_image` should come back `verified`. Cite those evidence blocks in provenance.
+- Static decompilation does not emulate DOS: interrupts, BIOS device ports, timing and self-modifying code are out of scope — cross-check behaviour with `dos-runtime-harness`.
+- All pseudocode, symbol notes and dumps from REA go to the private git-ignored `analysis/` folder (`cleanroom-gate`); addresses and digests may be cited in provenance.
+
 - Load the image at `PSP + 0x100` and start at `CS:IP`; mark the PSP and IVT hooks.
 - Find file I/O by `INT 21h` calls (`3D/3F/40/42`), not by guessing filenames.
 - Find the main loop by the timer tick (`INT 8h` hook or port `0x40`) and the keyboard poll.
