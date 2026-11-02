@@ -1,32 +1,58 @@
-file:///C:/Users/Daniel/OneDrive/Desktop/retro-port-kit/tests/tools.test.mjs:97
-  const { agentFile, loadKit } = await import(pathToFileURL(join(ROOT, 'scripts/lib.mjs')).href)
-                                 ^^^^^
-
-SyntaxError: Unexpected reserved word
-    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
-    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)
-    at #translate (node:internal/modules/esm/loader:435:20)
-    at afterLoad (node:internal/modules/esm/loader:491:29)
-    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)
-    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)
-    at afterResolve (node:internal/modules/esm/loader:597:52)
-    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)
-    at node:internal/modules/esm/loader:622:32
-    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
-
-Node.js v24.17.0
-Ô£û tests\tools.test.mjs (56.8318ms)
-Ôä╣ tests 1
+Ô£ö refuses to write without approval when not interactive (66.6159ms)
+Ô£ö --json returns a machine-readable plan and writes nothing (67.9934ms)
+Ô£ö --json --yes applies and records the install recipe (268.9771ms)
+Ô£ö update without flags re-applies the recorded install (338.6114ms)
+Ô£ö dry run writes nothing (99.2819ms)
+Ô£ö invalid scope is rejected before planning or changing files (247.1657ms)
+Ô£ö non-interactive uninstall requires approval and dry run preserves files (401.6966ms)
+Ô£ö install is idempotent, preserves user AGENTS.md, and uninstall restores the original state (1042.3884ms)
+Ô£ö uninstall never removes the project directory, even when it becomes empty (226.9699ms)
+Ô£ö doctor detects a modified context block (211.8197ms)
+Ô£ö a file edited by the user is backed up on update and kept on uninstall (353.4ms)
+Ô£û shared skills destination is written once for several clients (142.4786ms)
+Ô£ö user scope installs skills and global agents under HOME and uninstalls (397.4025ms)
+Ô£ö scaffold installs tools, templates and the web shell without overwriting user files (128.2899ms)
+Ô£ö scaffold is rejected for user scope (63.7878ms)
+Ô£ö scaffold refuses to write into the kit itself (66.6053ms)
+Ô£ö validate passes and every skill is portable (59.5959ms)
+Ô£ö generated plugin is up to date (195.3491ms)
+´╣ú symlinked destination that is not ours is refused (0.1009ms) # creating symlinks usually requires elevation on Windows
+Ô£ö 5x7 font table is complete and well formed (1.6764ms)
+Ô£ö web shell modules parse as ES modules (377.6577ms)
+Ô£ö cleanroom gate fails on tracked original binaries and passes when clean (531.6639ms)
+Ô£ö cleanroom gate reports a missing git repository instead of crashing (92.9245ms)
+Ô£ö cleanroom gate flags decompiler traces, allows allowlisted files and skips binaries (327.6546ms)
+Ô£ö cleanroom gate passes with traced files when detection is off (305.4054ms)
+Ô£ö model tiers emit a model where mapped and degrade where not (7.0888ms)
+Ô£ö renderPlan groups operations per client and emits no ANSI codes off a TTY (1.7239ms)
+Ôä╣ tests 27
 Ôä╣ suites 0
-Ôä╣ pass 0
+Ôä╣ pass 25
 Ôä╣ fail 1
 Ôä╣ cancelled 0
-Ôä╣ skipped 0
+Ôä╣ skipped 1
 Ôä╣ todo 0
-Ôä╣ duration_ms 62.2769
+Ôä╣ duration_ms 4449.8709
 
 Ô£û failing tests:
 
-test at tests\tools.test.mjs:1:1
-Ô£û tests\tools.test.mjs (56.8318ms)
-  'test failed'
+test at tests\setup.test.mjs:157:1
+Ô£û shared skills destination is written once for several clients (142.4786ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  21 !== 20
+  
+      at TestContext.<anonymous> (file:///C:/Users/Daniel/OneDrive/Desktop/retro-port-kit/tests/setup.test.mjs:161:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+      at Test.postRun (node:internal/test_runner/test:1447:19)
+      at Test.run (node:internal/test_runner/test:1372:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 21,
+    expected: 20,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

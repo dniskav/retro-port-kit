@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, lstatSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, '..')
@@ -154,11 +154,12 @@ test('a file edited by the user is backed up on update and kept on uninstall', (
   rmSync(p, { recursive: true })
 })
 
-test('shared skills destination is written once for several clients', () => {
+test('shared skills destination is written once for several clients', async () => {
   const p = proj()
   assert.equal(run(['setup', '--client', 'codex', '--client', 'qwen', '--client', 'gemini', '--project', p, '--yes']).status, 0)
   const skills = tree(join(p, '.agents/skills')).filter((f) => f.endsWith('SKILL.md'))
-  assert.equal(skills.length, 20)
+  const { loadKit } = await import(pathToFileURL(join(ROOT, 'scripts/lib.mjs')).href)
+  assert.equal(skills.length, loadKit().skills.length, 'one SKILL.md per kit skill, written once')
   rmSync(p, { recursive: true })
 })
 
