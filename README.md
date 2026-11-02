@@ -3,8 +3,8 @@
 Agents and skills for porting or recreating retro games (method extracted from a real Syndicate port), with a DOS-first recon pack and a browser shell. **One neutral source, per-harness adapters.**
 
 ```
-src/skills/<name>/SKILL.md      20 portable skills (Agent Skills format: only `name` + `description` in frontmatter)
-src/agents/<name>.md            7 role definitions (neutral frontmatter: capabilities, skills)
+src/skills/<name>/SKILL.md      21 portable skills (Agent Skills format: only `name` + `description` in frontmatter)
+src/agents/<name>.md            8 role definitions (neutral frontmatter: capabilities, skills, model_tier)
 tools/                          dependency-free tools: Chrome CDP shot/log, clean-room checker, pixel-font & PNG/SVG builders
 templates/project/              PROJECT-POLICY, state.json, HANDOFF, docs/ (ADRs, experiments, sources, gaps), cleanroom config
 templates/web/                  dependency-free browser shell: fixed tick, input, audio unlock, saves, debug handle
@@ -99,7 +99,7 @@ The manifest lives at `~/.retro-port-kit.json`; `update --scope user` re-applies
 - Skill folders with `SKILL.md` are an open convention; paths vary and some sources conflict (Codex: `.agents/skills` vs `.codex/skills`; OpenCode: `.opencode/skills` vs `.opencode/skill`; Copilot: `.github/skills`). If a tool does not see the skills, copy/link to the other path or use the generic playbook.
 - Agent tool names are best-effort mappings in `scripts/lib.mjs` (`TOOLS`); adjust there if your harness version uses other names. OpenCode agent permissions changed between versions (`tools` map vs `permissions`); the generator emits the older map.
 - Only portable frontmatter keys (`name`, `description`) are used in skills; `scripts/validate.mjs` enforces it.
-- `model_tier` in agent frontmatter is advisory (`strong`/`balanced`/`fast`); adapters do not force a model, so each harness keeps its own default.
+- `model_tier` in agent frontmatter (`fast`/`balanced`/`strong`) is a level, not a commit: `scripts/model-tiers.mjs` maps tiers to concrete per-harness models (Claude Code aliases are pre-filled; OpenCode/VS Code need `provider/model` entries) and the adapters omit the field for any unmapped harness, which then keeps its own default.
 - Verified: Claude Code lists the installed skills and agents at session start.
 - Node: the installer and tests run on **Node >= 18.17**. The CDP tools (`tools/cdp-*.mjs`) use the global `WebSocket` and need **Node >= 22**; the TypeScript tools need Node >= 22.6 (`--experimental-strip-types`).
 
@@ -108,8 +108,8 @@ Nine numbered stages plus a vertical-slice gate; do not advance without the gate
 
 | # | Stage | Gate |
 |---|---|---|
-| 0 | Intake | `PROJECT-POLICY.md` exists and the user confirmed it |
-| 1 | Recon & research | inventory complete, every format has a status, unknowns ledger started |
+| 0 | Intake | `PROJECT-POLICY.md` exists (fidelity A/B/C + reference-code choice recorded), user confirmed it |
+| 1 | Recon & research | inventory complete, every format has a status, unknowns ledger started; cheap-model triage labels verified by sampling review (recorded in `state.json`) |
 | 2 | Spec from evidence | each rule has source + confidence, contradictions listed |
 | 3 | Core engine | reference hashes match on the agreed sample, golden master recorded |
 | **3.5** | **Vertical slice** | one screen end to end (input → sim → render → audio → save) in a real browser |
@@ -125,8 +125,9 @@ Nine numbered stages plus a vertical-slice gate; do not advance without the gate
 - **Failure handling**: `silent-fallback-hunt` when "all green but looks wrong"; `fault-bisect` for opaque failures; two failed attempts of the same kind → change approach or ask.
 
 ## Skills
-**Method**: `retro-port-intake` · `retro-port-orchestrate` · `handoff-memory` · `spec-from-evidence`
+**Method**: `retro-port-intake` · `retro-port-orchestrate` · `handoff-memory`
 **DOS recon**: `dos-runtime-harness` · `dos-binary-analysis` · `dos-video-modes` · `dos-audio-opl` · `game-data-recon`
+**Evidence**: `function-vectors` · `spec-from-evidence`
 **Engineering**: `web-shell` · `oracle-golden-master` · `behavior-preserving-refactor` · `procedural-assets` · `ui-fidelity`
 **Verification**: `browser-e2e-cdp` · `silent-fallback-hunt` · `fault-bisect` · `cleanroom-gate` · `blind-rebuild-test`
 **Environment**: `env-recipes`
