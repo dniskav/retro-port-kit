@@ -2,6 +2,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MODEL_TIERS } from './model-tiers.mjs'
 
 export const KIT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const MARK_BEGIN = '<!-- retro-port-kit:begin -->'
@@ -40,13 +41,23 @@ const toolsFor = (target, caps) => [...new Set(caps.flatMap((c) => TOOLS[target]
 
 const q = (s) => JSON.stringify(s)
 
+/** tier of the agent → concrete model value for a harness, or null when that harness has no verified mapping */
+const modelFor = (target, a) => {
+  const tier = a.meta.model_tier
+  if (!tier) return null
+  return MODEL_TIERS[target]?.[tier] ?? null
+}
+
 /** per-harness agent file: returns { path, text } relative to the project root */
 export function agentFile(target, a) {
   const caps = list(a.meta.capabilities)
   const { name, description } = a.meta
   const body = a.body + `\nSkills to load when relevant: ${list(a.meta.skills).join(', ')} (see the skills directory of your harness, or retro-port/PLAYBOOK.md).\n`
-  if (target === 'claude') return { path: `.claude/agents/${name}.md`, text: `---\nname: ${name}\ndescription: ${description}\ntools: ${toolsFor('claude', caps).join(', ')}\n---\n${body}` }
-  if (target === 'vscode') return { path: `.github/agents/${name}.agent.md`, text: `---\nname: ${name}\ndescription: ${q(description)}\ntools: [${toolsFor('vscode', caps).map(q).join(', ')}]\n---\n${body}` }
+  const model = modelFor(target, a)
+  const claudeModel = model ? `model: ${model}\n` : ''
+  const plainModel = model ? `model: ${q(model)}\n` : ''
+  if (target === 'claude') return { path: `.claude/agents/${name}.md`, text: `---\nname: ${name}\ndescription: ${description}\ntools: ${toolsFor('claude', caps).join(', ')}\n${claudeModel}---\n${body}` }
+  if (target === 'vscode') return { path: `.github/agents/${name}.agent.md`, text: `---\nname: ${name}\ndescription: ${q(description)}\ntools: [${toolsFor('vscode', caps).map(q).join(', ')}]\n${plainModel}---\n${body}` }
   if (target === 'qwen') return { path: `.qwen/agents/${name}.md`, text: `---\nname: ${name}\ndescription: ${description}\ntools:\n${toolsFor('qwen', caps).map((t) => `  - ${t}`).join('\n')}\n---\n${body}` }
   if (target === 'opencode') {
     const tools = `tools:\n  write: ${caps.includes('write')}\n  edit: ${caps.includes('write')}\n  bash: ${caps.includes('shell')}\n  webfetch: ${caps.includes('web')}\n`
@@ -57,13 +68,15 @@ export function agentFile(target, a) {
     const permissions = deny.length
       ? `permissions:\n${deny.map((g) => `  - action: edit\n    resource: ${q(g)}\n    effect: deny`).join('\n')}\n`
       : ''
+    // model tier → `provider/model-id` only when the mapping is configured in model-tiers.mjs
+    const ocModel = model ? `model: ${q(model)}\n` : ''
     // primary/all agents can both delegate and be delegated; subagents cannot nest further subagents
     const notes = mode === 'subagent' ? '' : `
 Notes for this harness (OpenCode V2):
 - As the primary session agent you MAY launch subagents with the \`subagent\` tool — that is your main delegation mechanism.
 - If you yourself were launched as a subagent, you cannot nest further subagents; in that case do not attempt it — adopt the specialist role yourself and report limitations back.
 `
-    return { path: `.opencode/agents/${name}.md`, text: `---\ndescription: ${q(description)}\nmode: ${mode}\n${tools}${permissions}---\n${body}${notes}` }
+    return { path: `.opencode/agents/${name}.md`, text: `---\ndescription: ${q(description)}\nmode: ${mode}\n${ocModel}${tools}${permissions}---\n${body}${notes}` }
   }
   return null
 }

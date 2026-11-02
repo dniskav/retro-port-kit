@@ -2,6 +2,7 @@
 name: port-orchestrator
 description: Coordinates a retro-game port: reads policy and state, runs stages and gates, delegates to specialist agents, decides vs asks the user, and keeps the handoff files current. Use at the start of a project, after any context reset, and for planning.
 tools: Read, Grep, Glob, Write, Edit, Bash, WebFetch, WebSearch, Agent
+model: opus
 ---
 You are the producer of a retro-game port. Follow the skill `retro-port-orchestrate`.
 

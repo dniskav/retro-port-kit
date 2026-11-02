@@ -93,6 +93,23 @@ test('cleanroom gate passes with traced files when detection is off', () => {
   rmSync(p, { recursive: true, force: true })
 })
 
+test('model tiers emit a model where mapped and degrade where not', async () => {
+  const { agentFile, loadKit } = await import(pathToFileURL(join(ROOT, 'scripts/lib.mjs')).href)
+  const { MODEL_TIERS } = await import(pathToFileURL(join(ROOT, 'scripts/model-tiers.mjs')).href)
+  const kit = loadKit()
+  const orchestrator = kit.agents.find((a) => a.meta.name === 'port-orchestrator')
+  assert.ok(orchestrator, 'orchestrator source exists')
+  const claude = agentFile('claude', orchestrator).text
+  assert.match(claude, /model: opus/, 'claude mapping emits a model alias')
+  for (const target of ['opencode', 'vscode']) {
+    assert.doesNotMatch(agentFile(target, orchestrator).text, /\nmodel:/, `${target} has no mapping configured → field omitted`)
+  }
+  assert.equal(MODEL_TIERS.claude.fast, 'haiku')
+  // removing the tier from frontmatter degrades to no model, build still fine
+  const plain = { ...orchestrator, meta: { ...orchestrator.meta, model_tier: undefined } }
+  assert.ok(!agentFile('claude', plain).text.includes('model:'))
+})
+
 test('renderPlan groups operations per client and emits no ANSI codes off a TTY', async () => {
   const { renderPlan } = await import(pathToFileURL(join(ROOT, 'scripts/ui.mjs')).href)
   const ops = [
