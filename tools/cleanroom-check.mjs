@@ -1,7 +1,8 @@
 // Clean-room gate: does the repo contain or need files of the original game?
 // Usage: node tools/cleanroom-check.mjs [--quick]   (config: cleanroom.config.json in the project root)
 // config: { "originalNames": "regex", "referenceDir": "reference/", "generatedDirs": ["dist-assets/"],
-//           "originalDataDir": "Original/", "buildCommand": ["npm","run","assets:ci"],
+//           "originalDataDir": "Original/", "analysisDir": "analysis/", "decompilerTraces": true,
+//           "traceAllowlist": ["docs/SOURCES.md"], "buildCommand": ["npm","run","assets:ci"],
 //           "testCommand": ["npx","vitest","run"], "workdir": "." }
 import { execFileSync } from 'node:child_process'
 import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
@@ -15,6 +16,9 @@ const cfg = {
   referenceDir: 'reference/',
   generatedDirs: [],
   originalDataDir: '',
+  analysisDir: 'analysis/',
+  decompilerTraces: true,
+  traceAllowlist: [],
   buildCommand: ['npm', 'run', 'assets:ci'],
   testCommand: ['npx', 'vitest', 'run'],
   workdir: '.',
@@ -50,6 +54,32 @@ original.length ? fail('original data directory is tracked: ' + original.slice(0
 
 const reference = tracked.filter((f) => cfg.referenceDir && under(f, cfg.referenceDir))
 reference.length ? fail('reference captures are tracked: ' + reference.slice(0, 3).join(', ')) : ok('reference captures are not tracked')
+
+const analysis = tracked.filter((f) => cfg.analysisDir && under(f, cfg.analysisDir))
+analysis.length
+  ? fail(`binary-analysis output is tracked (keep decompiler/pseudocode work in ${cfg.analysisDir}, git-ignored): ` + analysis.slice(0, 3).join(', '))
+  : ok(`binary-analysis output (${cfg.analysisDir}) is not tracked`)
+
+// Decompiler leftovers committed as if they were source: IDA/Ghidra default names and calling-convention
+// keywords. Editable allowlist for provenance docs; binary artifacts are ignored by the scan.
+if (cfg.decompilerTraces) {
+  const reTrace = /\b(FUN|DAT|LAB|JPT|MSG|OFF|UNK)_[0-9a-fA-F]{4,}\b|\bundefined[0-9]+[a-z0-9_]*\b|\b__int(?:8|16|32|64|128)\b|\b__(?:c?cdecl|fastcall|thiscall|stdlib|usercall)\b|\b__return\b|\b__stack_protect\b/gi
+  const allow = dirs(cfg.traceAllowlist)
+  const hits = new Map()
+  for (const f of tracked) {
+    if (allow.some((d) => under(f, d))) continue
+    let buf
+    try { buf = readFileSync(join(root, f)) } catch { continue }
+    if (buf.length === 0 || buf.length > 4 * 1024 * 1024) continue
+    if (buf.subarray(0, Math.min(buf.length, 512)).includes(0)) continue // binary
+    const text = buf.toString('utf8')
+    const n = [...text.matchAll(reTrace)].length
+    if (n) hits.set(f, n)
+  }
+  hits.size
+    ? [...hits.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([f, n]) => fail(`decompiler traces in ${f}: ${n} (rewrite as own code/prose, or allowlist in traceAllowlist)`))
+    : ok('no decompiler traces in tracked text files')
+}
 
 if (process.argv.includes('--quick')) {
   console.log(bad ? `\n${bad} failed checks` : '\nclean (quick)')

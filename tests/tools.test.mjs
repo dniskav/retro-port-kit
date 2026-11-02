@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -56,6 +56,40 @@ test('cleanroom gate reports a missing git repository instead of crashing', () =
   const r = spawnSync('node', [join(ROOT, 'tools/cleanroom-check.mjs'), '--quick'], { cwd: p, encoding: 'utf8' })
   assert.equal(r.status, 1)
   assert.match(r.stdout, /not a git repository/)
+  rmSync(p, { recursive: true, force: true })
+})
+
+test('cleanroom gate flags decompiler traces, allows allowlisted files and skips binaries', () => {
+  const p = mkdtempSync(join(tmpdir(), 'rpk-trace-'))
+  const git = (...args) => execFileSync('git', args, { cwd: p, stdio: 'ignore' })
+  git('init', '-q')
+  mkdirSync(join(p, 'docs'), { recursive: true })
+  writeFileSync(join(p, 'engine.c'), 'int FUN_4a2c(int x) { __int16 y = undefined4; }\n')
+  writeFileSync(join(p, 'docs/provenance.md'), 'routine FUN_4a2c came from the disassembler.\n')
+  writeFileSync(join(p, 'tables.dat'), Buffer.from('MZ\x00 chunks with FUN_ inside are not scanned'))
+  writeFileSync(join(p, 'clean.c'), 'int own_code(int x) { return x + 1; }\n') // no traces, no allowlist
+  writeFileSync(join(p, 'cleanroom.config.json'), JSON.stringify({ traceAllowlist: ['docs/'] }))
+  git('-c', 'user.email=t@t', '-c', 'user.name=t', 'add', '-A')
+  git('-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 't')
+  const r = spawnSync('node', [join(ROOT, 'tools/cleanroom-check.mjs'), '--quick'], { cwd: p, encoding: 'utf8' })
+  assert.equal(r.status, 1)
+  assert.match(r.stdout, /decompiler traces in engine\.c/)
+  assert.doesNotMatch(r.stdout, /decompiler traces in docs/)
+  assert.doesNotMatch(r.stdout, /decompiler traces in tables\.dat/)
+  assert.doesNotMatch(r.stdout, /decompiler traces in clean\.c/)
+  rmSync(p, { recursive: true, force: true })
+})
+
+test('cleanroom gate passes with traced files when detection is off', () => {
+  const p = mkdtempSync(join(tmpdir(), 'rpk-trace-off-'))
+  const git = (...args) => execFileSync('git', args, { cwd: p, stdio: 'ignore' })
+  git('init', '-q')
+  writeFileSync(join(p, 'engine.c'), 'int FUN_4a2c(int x) { __int16 y = undefined4; }\n')
+  writeFileSync(join(p, 'cleanroom.config.json'), JSON.stringify({ decompilerTraces: false, originalNames: '(^|/)([\\w-]+\\.(voc|dat))$' }))
+  git('-c', 'user.email=t@t', '-c', 'user.name=t', 'add', '-A')
+  git('-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 't')
+  const r = spawnSync('node', [join(ROOT, 'tools/cleanroom-check.mjs'), '--quick'], { cwd: p, encoding: 'utf8' })
+  assert.equal(r.status, 0, r.stdout)
   rmSync(p, { recursive: true, force: true })
 })
 

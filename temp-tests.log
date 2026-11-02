@@ -1,0 +1,61 @@
+Ô£ö refuses to write without approval when not interactive (74.0025ms)
+Ô£ö --json returns a machine-readable plan and writes nothing (69.6134ms)
+Ô£ö --json --yes applies and records the install recipe (135.8583ms)
+Ô£ö update without flags re-applies the recorded install (329.1501ms)
+Ô£ö dry run writes nothing (95.9891ms)
+Ô£ö invalid scope is rejected before planning or changing files (241.5587ms)
+Ô£ö non-interactive uninstall requires approval and dry run preserves files (399.589ms)
+Ô£ö install is idempotent, preserves user AGENTS.md, and uninstall restores the original state (958.6659ms)
+Ô£ö uninstall never removes the project directory, even when it becomes empty (206.9907ms)
+Ô£ö doctor detects a modified context block (197.9378ms)
+Ô£ö a file edited by the user is backed up on update and kept on uninstall (328.157ms)
+Ô£ö shared skills destination is written once for several clients (135.9734ms)
+Ô£ö user scope installs skills and global agents under HOME and uninstalls (357.4182ms)
+Ô£ö scaffold installs tools, templates and the web shell without overwriting user files (129.7887ms)
+Ô£ö scaffold is rejected for user scope (61.0367ms)
+Ô£ö scaffold refuses to write into the kit itself (62.3064ms)
+Ô£ö validate passes and every skill is portable (55.6288ms)
+Ô£û generated plugin is up to date (164.3242ms)
+´╣ú symlinked destination that is not ours is refused (0.081ms) # creating symlinks usually requires elevation on Windows
+Ô£ö 5x7 font table is complete and well formed (1.945ms)
+Ô£ö web shell modules parse as ES modules (277.0922ms)
+Ô£ö cleanroom gate fails on tracked original binaries and passes when clean (566.1796ms)
+Ô£ö cleanroom gate reports a missing git repository instead of crashing (93.3964ms)
+Ô£ö cleanroom gate flags decompiler traces, allows allowlisted files and skips binaries (333.0664ms)
+Ô£ö cleanroom gate passes with traced files when detection is off (306.0394ms)
+Ô£ö renderPlan groups operations per client and emits no ANSI codes off a TTY (1.8252ms)
+Ôä╣ tests 26
+Ôä╣ suites 0
+Ôä╣ pass 24
+Ôä╣ fail 1
+Ôä╣ cancelled 0
+Ôä╣ skipped 1
+Ôä╣ todo 0
+Ôä╣ duration_ms 4076.2656
+
+Ô£û failing tests:
+
+test at tests\setup.test.mjs:211:1
+Ô£û generated plugin is up to date (164.3242ms)
+  AssertionError [ERR_ASSERTION]: stale in plugin/: skills\cleanroom-gate\SKILL.md
+  stale in plugin/: skills\spec-from-evidence\SKILL.md
+  
+  2 problem(s): run `node bin/retro-port-kit.mjs build` and commit plugin/ and .claude-plugin/.
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/Users/Daniel/OneDrive/Desktop/retro-port-kit/tests/setup.test.mjs:213:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+      at Test.postRun (node:internal/test_runner/test:1447:19)
+      at Test.run (node:internal/test_runner/test:1372:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

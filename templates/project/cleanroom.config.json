@@ -1,6 +1,9 @@
 {
   "originalNames": "(^|/)([\\w-]+\\.(exe|com|dat|voc|xmi|fli|flc|pal|s3m|mod|xm|it|opl|adl|hsc|cmf|mid|wav))$",
   "referenceDir": "reference/",
+  "analysisDir": "analysis/",
+  "decompilerTraces": true,
+  "traceAllowlist": [],
   "generatedDirs": ["public/assets-free/"],
   "originalDataDir": "Original/",
   "buildCommand": ["npm", "run", "assets:ci"],

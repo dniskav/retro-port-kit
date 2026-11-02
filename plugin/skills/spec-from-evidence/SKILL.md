@@ -12,6 +12,6 @@ For each subsystem (movement, combat, AI, vehicles, campaign, UI layout, audio..
 5. **Open questions** linked to the unknowns ledger.
 
 Rules of thumb
-- Specs describe behaviour in prose and tables, not decompiler output.
+- Specs describe behaviour in prose, tables and your OWN pseudocode. Never paste disassembler or decompiler output (`FUN_…`/`DAT_…` labels, `__intN`, `__fastcall` and the like) into specs or product code; keep raw dumps in the private `analysis/` folder and cite them as provenance only.
 - Own numbers are fine when the project is clean-room: mark them as *design values*.
 - A spec is done when a different agent can implement it and pass the vectors without reading the original.
