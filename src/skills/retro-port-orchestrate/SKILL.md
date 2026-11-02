@@ -45,6 +45,13 @@ Run the mechanical pass on a cheap model (`data-triage` if available; otherwise 
 
 An overturned item is dropped only after the analyst confirms, and the sampling is repeated if more than 10% is overturned.
 
+## Stage 1 with reference source code (policy option 8.b / 8.c)
+When the policy allows reading a public reference implementation (8.b) or reusing it (8.c):
+- Stage 1 becomes: read the reference code per subsystem and write the spec from it, with `[source: reference code, SHA/URL]` instead of addresses; run the original against the harness only when the reference is ambiguous.
+- The clean-room gate (7) still applies to what ships: reference-derived specs are fine, but no reference file, comment or identifier may land in the repo unless 8.c was chosen with an explicit compatible licence and attribution plan recorded as a decision.
+- Disassembly (and `dos-binary-analysis`) is skipped unless the reference does not cover a system; say so in the spec instead of guessing.
+- Gate 2 criterion is unchanged: each rule needs source + confidence — "reference code" is a source.
+
 ## Delegation
 - One owner per stage. Use specialist agents when context isolation or parallelism pays (recon, QA, assets); otherwise load the skill and do it yourself.
 - Parallel fan-out only for independent work (assets vs engine vs docs). Shared resources (browser, emulator, ports) need a lock: one user at a time.

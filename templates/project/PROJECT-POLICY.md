@@ -10,6 +10,7 @@
 - Formats: SVG (UI), WOFF2/TTF (text), OGG (audio), JSON (data), indexed PNG only for recoloured pixel art.
 - Audio: <OPL re-synthesis | original compositions | both>; no original music/SFX files shipped.
 - External research: knowledge only; never third-party code; log in docs/SOURCES.md.
+- Reference source code: <none (clean-room) | read-as-spec (repo/link) | direct reuse (licence + obligations)>; 8.b/8.c change stage 1 (orchestrate).
 - Languages: code=<>, UI=<>, docs=<>
 - Targets: browsers=<>, min viewport=<>, performance budget=<ms/frame, MB assets>
 - Never: <folders not to modify, credentials, actions needing the user's session>

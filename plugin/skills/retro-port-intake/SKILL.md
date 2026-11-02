@@ -18,6 +18,7 @@ Goal: capture, once, the decisions that were expensive to change late in past pr
 5. **Platforms/harness**: target runtime (web/desktop), languages (code, UI text, docs), CI available?
 6. **Taste & constraints**: visual references, things the user dislikes, machine constraints (e.g. emulator needs an idle desktop session, no credentials, folders that must never be modified).
 7. **External research policy**: web sources allowed for *knowledge* (formats, behaviour); never copy third-party code; log provenance.
+8. **Reference source code**: if a public reference implementation or released source already exists (a community reimplementation under a permissive licence, an author release…), record the choice in the policy: (a) none → standard clean-room recon; (b) read-as-spec → allowed, disassembly is skipped or reduced to the minimum; (c) direct reuse → only if the licence is compatible and the policy accepts its obligations (attribution, redistribution). (b) and (c) change stage 1: see `retro-port-orchestrate`.
 
 ## Produce
 - `PROJECT-POLICY.md` from `templates/project/PROJECT-POLICY.md` (rules, not prose).
